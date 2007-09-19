@@ -1,0 +1,4 @@
+plugin.tx_ecorss.feedType = 121
+plugin.tx_ecorss.defaultFeed = atom
+plugin.tx_ecorss.title = Title not already defined
+plugin.tx_ecorss.subtitle = Description not already defined

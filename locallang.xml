@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>database</type>
+		<description>Language labels for extension 'ecorss'</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="mvc1_title">ecorss</label>
+			<label index="mvc1_plus_wiz_description">ecorss</label>
+			<label index="first_name">First name:</label>
+			<label index="last_name">Last name:</label>
+			<label index="email">Email:</label>
+			<label index="sendButton">Send</label>
+			<label index="resetButton">Reset</label>
+			<label index="addAddress">Add a new address:</label>
+			<label index="updateAddress">Update / delete an address:</label>
+			<label index="insertEmail">Insert your email, please:</label>
+			<label index="confirmEmail">Un email de confirmation vient de vous être envoyé.</label>
+			<label index="emptyFirstNameError">First name's value is empty :</label>
+			<label index="emptyLastNameError">Last name's value is empty :</label>
+			<label index="emptyEmailError">Email's value empty :</label>
+			<label index="formError">More informations needed</label>
+			<label index="invalidEmailError">Email format invalid :</label>
+			<label index="formOK1">We receive your subscription successfuly.</label>
+			<label index="formOK2">An email has been sent</label>
+			<label index="formOK3">Please, read the email in order to confirm your subscription.</label>
+			<label index="formUpdateUserOK1">An email has been sent.</label>
+			<label index="formUpdateUserOK2">Please, read it and follow the instructions.</label>
+			<label index="backButton">Back</label>
+			<label index="existsEmailError">Email already exists:</label>
+			<label index="notExistsEmailError">This email does not exist :</label>
+			<label index="emailSubjectAddUser">Confirm your subscription, please.</label>
+			<label index="emailSubjectUpdateUser">Update your subscription.</label>
+			<label index="updateButton">Update</label>
+			<label index="yesButton">Yes</label>
+			<label index="noButton">No</label>
+			<label index="subscriptionConfirmed">Your subscription is confirmed.</label>
+			<label index="subscriptionHello">Hello</label>
+			<label index="subscriptionText1">You will receive our next newsletter.</label>
+			<label index="subscriptionText2">You can edit or delete your subscription at any time :</label>
+			<label index="deleteConfirmation">Are you sure you want to delete your subscription</label>
+		</languageKey>
+		<languageKey index="fr" type="array">
+			<label index="mvc1_title">ecorss</label>
+			<label index="mvc1_plus_wiz_description">ecorss</label>
+			<label index="first_name">Prénom :</label>
+			<label index="last_name">Nom :</label>
+			<label index="email">Email :</label>
+			<label index="sendButton">Envoyer</label>
+			<label index="resetButton">Annuler</label>
+			<label index="addAddress">Ajouter une nouvelle adresse</label>
+			<label index="updateAddress">Modifier / Supprimer une adresse</label>
+			<label index="insertEmail">Veuillez saisir votre adresse email :</label>
+			<label index="confirmEmail">Un email de confirmation vient de vous être envoyé.</label>
+			<label index="emptyFirstNameError">Veuillez saisir votre prénom :</label>
+			<label index="emptyLastNameError">Veuillez saisir votre nom :</label>
+			<label index="emptyEmailError">Veuillez saisir un email :</label>
+			<label index="formError">Données saisies incomplètes.</label>
+			<label index="invalidEmailError">Adresse email invalide :</label>
+			<label index="formOK1">Votre inscription nous est bien parvenue.</label>
+			<label index="formOK2">Un email de confirmation vient de vous être envoyé.</label>
+			<label index="formOK3">Veuillez en prendre connaissance pour finaliser votre inscription.</label>
+			<label index="formUpdateUserOK1">Un email vient de vous être envoyé.</label>
+			<label index="formUpdateUserOK2">Veuillez en prendre connaissance et suivre les indications pour modifier votre inscription.</label>
+			<label index="subscriptionToConfirm">Inscription à confirmer par email.</label>
+			<label index="backButton">Retour</label>
+			<label index="existsEmailError">Email déjà inscrit :</label>
+			<label index="notExistsEmailError">Cet adresse email n'est pas enregistré :</label>
+			<label index="emailSubjectAddUser">Veuillez confirmer votre inscription à la newsletter.</label>
+			<label index="emailSubjectUpdateUser">Modifier votre inscription à la newsletter.</label>
+			<label index="updateButton">Mettre à jour</label>
+			<label index="deleteButton">Supprimer</label>
+			<label index="yesButton">Oui</label>
+			<label index="noButton">Non</label>
+			<label index="subscriptionConfirmed">Votre inscription est à présent confirmée.</label>
+			<label index="subscriptionHello">Bonjour,</label>
+			<label index="subscriptionText1">Vous recevrez de nos nouvelles dans notre prochaine newsletter.</label>
+			<label index="subscriptionText2">Vous pouvez, en tout temps, mettre à jour vos coordonnées ou résilier votre abonnement :</label>
+			<label index="deleteConfirmation">Etes-vous certain de vouloir supprimer votre inscription ?</label>
+		</languageKey>
+	</data>
+	
+</T3locallang>
