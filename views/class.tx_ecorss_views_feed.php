@@ -34,18 +34,18 @@
  */
 
 class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
-	
+
 	function printSummary(){
 		$content = str_replace('<p>','',$this->asRte('summary'));
 		print str_replace('</p>','',$content);
 	}
-	
+
 	/**
 	 * print the current url of the page
 	 *
 	 */
 	function printUrl(){
-		print 'http://'.t3lib_div::getIndpEnv('HTTP_HOST');
+		print 'http://'.$this->asText('host');
 		print $this->asText('url');
 	}
 }

@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Ecodev : rss services',
-	'description' => 'Generate a RSS feed based on the latest content of a SQL table.',
+	'description' => 'Generate *quickly* and *easily* RSS feeds based on the latest content of a SQL table.',
 	'category' => 'fe',
 	'author' => 'Fabien Udriot',
 	'author_email' => 'fabien.udriot@ecodev.ch',

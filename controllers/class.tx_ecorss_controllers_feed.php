@@ -92,6 +92,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$view['title'] = $this->configurations['title'];
 		$view['subtitle'] = $this->configurations['subtitle'];
 		$view['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
+		$view['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('HTTP_HOST');
 		$view['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
 		
 		$view->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed');
