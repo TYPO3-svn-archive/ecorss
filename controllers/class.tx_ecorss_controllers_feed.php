@@ -56,7 +56,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 						default :
 							$feed = 'application/atom+xml';
 					}
-					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="index.php?id=23&type='.$config['typeNum'].'" />'.chr(10); 
+					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$config['url'].'" />'.chr(10); 
 				}
 				else{
 					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup : page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
