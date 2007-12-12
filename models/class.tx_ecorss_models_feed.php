@@ -33,7 +33,7 @@
  *
  */
 
-class tx_ecorss_models_feed extends tx_lib_processor {
+class tx_ecorss_models_feed extends tx_lib_object {
 
 	/**
 	 * Check if an email address exists in the database
@@ -42,6 +42,7 @@ class tx_ecorss_models_feed extends tx_lib_processor {
 	 */
 	public function load(){
 		//init a few variables
+		$pidRootline = $this->controller->configurations['pidRootline'];
 		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : array(0);
 		$limitSQL = isset($this->controller->configurations['numberItems']) ? $this->controller->configurations['numberItems'] : '10';
 		$entries = array();
@@ -80,24 +81,35 @@ class tx_ecorss_models_feed extends tx_lib_processor {
 			$uid = isset($config['uid']) ? $config['uid'] : 'uid';
 				
 			$pid = isset($config['pid']) ? $config['pid'] : 'pid';
-			//todo check
 			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated';
 
 			/*PROCESS THE CLAUSE */
 			$clauseSQL = 'hidden=0 and deleted=0';
 			//select some field according to the configuration
-			if(isset($config['field']) && isset($config['value'])){
-				$values = explode(',',$config['value']);
+			if(isset($config['filterField']) && isset($config['filterInclude'])){
+				$values = explode(',',$config['filterInclude']);
 				foreach($values as $value){
-					$clauseSQL .= ' AND '.$config['field'].'="'.trim($value).'"';
+					$clauseSQL .= ' AND '.$config['filterField'].'="'.trim($value).'"';
 				}
 			}
 			//exclude some field according to the configuration
-			if(isset($config['field']) && isset($config['exclude'])){
-				$values = explode(',',$config['exclude']);
+			if(isset($config['filterField']) && isset($config['filterExclude'])){
+				$values = explode(',',$config['filterExclude']);
 				foreach($values as $value){
-					$clauseSQL .= ' AND '.$config['field'].'!="'.trim($value).'"';
+					$clauseSQL .= ' AND '.$config['filterField'].'!="'.trim($value).'"';
 				}
+			}
+			//check if the page is in the root line
+			if($pidRootline != null){
+				$pages = $this->getAllPages($pidRootline);
+				$orSQL = $pageClauseSQL = '';
+				foreach($pages as $page){
+					$pageClauseSQL .= $orSQL.' pid='.$page['uid'];
+					if($orSQL == ''){
+						$orSQL = ' OR ';
+					}
+				}
+				$clauseSQL .= ' AND ('.$pageClauseSQL.')'; #fusion of the two clauses
 			}
 			$table = $config['table'] != '' ? $config['table'] : 'tt_content';
 
@@ -118,7 +130,7 @@ class tx_ecorss_models_feed extends tx_lib_processor {
 					if($linkItem == 'true' || $linkItem == 1){
 						$link->destination($row['pid']);
 						//$link->parameters(array('type' => $this->configurations['profileAjaxType']));
-						$url = 'http://'.t3lib_div::getIndpEnv('HTTP_HOST').'/'.$link->makeUrl(false);
+						$url = 'http://'.$this['host'].'/'.$link->makeUrl(false);
 					}
 						
 					//handle the default text
@@ -147,10 +159,19 @@ class tx_ecorss_models_feed extends tx_lib_processor {
 			//sort decreasingly in case it is an union of different arrays
 			krsort($entries,SORT_NUMERIC);
 		}
-		//print_r($entries);
 		$this['entries'] = array_splice($entries, 0,$limitSQL);
-
 	}
+	
+	function getAllPages($pid,&$arrayOfPid = array()){
+		$pages = tx_div::db()->exec_SELECTgetRows('uid','pages','deleted = 0 AND hidden = 0 AND pid='.$pid);
+		$arrayOfPid = array_merge($pages,$arrayOfPid);
+		if(count($pages) > 0){
+			foreach($pages as $page){
+				$this->getAllPages($page['uid'],$arrayOfPid);
+			}
+		}
+		return $arrayOfPid;
+	}	
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']);

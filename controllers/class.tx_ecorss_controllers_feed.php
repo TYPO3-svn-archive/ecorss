@@ -38,7 +38,6 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	var $defaultAction = 'default';
 	
 	public function add($content,$configurations) {
-		
 		$htmlHeader = '';
 		$errorMsg = '<div style="color:red"><b>plugin ecorss error</b> : ';
 		//loop around the feed
@@ -84,18 +83,17 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	public function defaultAction() {
 		// finding classnames
 		$model = $this->makeInstance('tx_ecorss_models_feed');
+		$model['title'] = $this->configurations['title'];
+		$model['subtitle'] = $this->configurations['subtitle'];
+		$model['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
+		$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('HTTP_HOST');
+		$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
 		$model->load();
-		if(!$model->getStatus() == TX_LIB_APS_OK) $this->_die('Unexpected result statuts in', __FILE__, __LINE__);
-
+		
 		//... and the view
 		$view = $this->makeInstance('tx_ecorss_views_feed',$model);
-		$view['title'] = $this->configurations['title'];
-		$view['subtitle'] = $this->configurations['subtitle'];
-		$view['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
-		$view['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('HTTP_HOST');
-		$view['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
-		
-		$view->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed');
+		$this->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed',TRUE,TRUE,$view);
+//		$view->castElements('tx_ecorss_views_entry');
 		
 		switch($this->configurations['feed']){
 			case 'rss';
@@ -105,13 +103,22 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 			default ;
 				$template = 'atomTemplate';
 		}
-		$view->render($template);		
-		if(!$view->getStatus() == TX_LIB_APS_OK) $this->_die('Unexpected result statuts in', __FILE__, __LINE__);
 
 		$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
 		print '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
-		return $view['result'];
+		return $view->render($template);
 	}
+	
+	function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE,&$object) {
+		if($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
+		if($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);
+		// First type the array or object to the new list object, so that we are sure to have an iterator object.
+		$list = new $listClassName($object->controller, $object->get($key)); 
+		for($list->rewind(); $list->valid(); $list->next()) 
+			$list->set($list->key(), new $listEntryClassName($object->controller, tx_div::toHashArray($list->current()))); 
+		$object->set($key, $list);
+	}
+
 }
 
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/controllers/class.tx_ecorss_controllers_feed.php']) {

@@ -2,7 +2,7 @@
 	<title><?php $this->printAsText('title') ?></title>
 	<subtitle><?php $this->printAsText('subtitle') ?></subtitle>
 	<link rel="alternate" type="text/html" href="<?php $this->printUrl() ?>"/>
-	<id><?php print 'http://'.t3lib_div::getIndpEnv('HTTP_HOST');$this->printAsText('url') ?></id>
+	<id><?php print 'http://';$this->printAsText('host');$this->printAsText('url') ?></id>
 	<updated><?php print date('c') ?></updated>
 
 	<generator uri="http://typo3.org" version="4.1">TYPO3 - Open Source Content Management</generator>
