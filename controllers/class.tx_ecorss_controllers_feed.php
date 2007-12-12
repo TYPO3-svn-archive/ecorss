@@ -109,6 +109,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		return $view->render($template);
 	}
 	
+	//Temporary function. This function has been removed from lib 0.0.24 from tx_lib_object. Waiting for a solution in a next "stable" alpha release.
 	function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE,&$object) {
 		if($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
 		if($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);

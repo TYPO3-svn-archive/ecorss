@@ -12,7 +12,7 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Ecodev : rss services',
-	'description' => 'Generate *quickly* and *easily* RSS feeds based on the latest content of a SQL table.',
+	'description' => 'Generate *quickly* and *easily* RSS feeds based on the latest content of a SQL table. Can deal with flexform content.',
 	'category' => 'fe',
 	'author' => 'Fabien Udriot',
 	'author_email' => 'fabien.udriot@ecodev.ch',
@@ -21,7 +21,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'conflicts' => '',
 	'priority' => '',
 	'module' => '',
-	'state' => 'alpha',
+	'state' => 'beta',
 	'internal' => '',
 	'uploadfolder' => 0,
 	'createDirs' => '',
@@ -33,8 +33,8 @@ $EM_CONF[$_EXTKEY] = array(
 	'constraints' => array(
 		'depends' => array(
 			'cms' => '',
-			'div' => '0.1.0',
-			'lib' => '0.1.0',
+			'div' => '0.1.0-0.0.0',
+			'lib' => '0.1.0-0.0.0',
 			'typo3' => '4.0.0-0.0.0',
 		),
 		'conflicts' => array(
