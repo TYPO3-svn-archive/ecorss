@@ -78,6 +78,13 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'],$configurations);
 		return $feed->main(null,$TSconfig);
+		
+		// !!! TODO, will probably change in future lib/div 
+		// evaluate this :
+		//$ClassName = tx_div::makeInstance('tx_ecorss_controllers_feed');
+		//$class = new $ClassName();
+		//$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['setup.'];
+		//return $class->main(null, array_merge($TSconfig['configurations.'],$configurations));
 	}
 	
 	public function defaultAction() {
