@@ -36,8 +36,9 @@
 class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 
 	function printSummary(){
-		$content = str_replace('<p>','',$this->asRte('summary'));
-		print str_replace('</p>','',$content);
+		$content = str_replace('<','&lt;',$this->asRte('summary'));
+		$content = str_replace('>','&gt;',$content);
+		print str_replace('&nbsp;','',$content);
 	}
 
 	/**
