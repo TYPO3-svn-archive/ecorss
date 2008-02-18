@@ -112,8 +112,8 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		}
 
 		$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
-		print '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
-		return $view->render($template);
+		$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
+		return $output.$view->render($template);
 	}
 	
 	//Temporary function. This function has been removed from lib 0.0.24 from tx_lib_object. Waiting for a solution in a next "stable" alpha release.
