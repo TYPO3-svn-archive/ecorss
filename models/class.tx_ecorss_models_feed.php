@@ -155,6 +155,11 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						$uid = substr($uid,0,5);
 					}
 
+					// Handle empty title
+					if (!$row['title'] && $table == 'tt_content') {
+						$this->updateClosestTitle($row, $clauseSQL, $sysLanguageUid);
+					}
+
 					$entries[$row['updated'].$uid] = array(
 						'title' => $defaultText.$row['title'],
 						'updated' => $row['updated'],
@@ -187,6 +192,44 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			}
 		}
 		return $arrayOfPid;
+	}
+
+	/**
+	 * Return the closest header for a given content element.
+	 * This only works for tt_content table.
+	 *
+	 * @param	array		$row: SQL row whose title should be updated
+	 * @param	string		$clauseSQL: current SQL filtering clause
+	 * @param	integer		$sysLanguageUid: <code>sys_language_uid</code> when used in a multilingual context
+	 * @access	private
+	 * @return	string		Closest header for the given element
+	 */
+	function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null) {
+		$clauseSQL .= ' AND pid='.$row['pid'].' AND sorting < (SELECT sorting FROM tt_content WHERE uid='.$row['uid'].') AND header != \'\'';
+		$result = tx_div::db()->exec_SELECTquery('header','tt_content',$clauseSQL,'','sorting DESC',1);
+		if ($result) {
+			$row2 = tx_div::db()->sql_fetch_assoc($result);
+			if ($row2['header']) {
+				// Update the title with the header of a previous content element
+				$row['title'] = $row2['header'];
+			} else {
+				// Title cannot be found, use the page's title instead
+				$table = 'pages';
+				$clauseSQL = 'uid='.$row['pid'];
+				if ($sysLanguageUid != null && $sysLanguageUid > 0) {
+					$table = 'pages_language_overlay';
+					$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
+				}
+
+				$result = tx_div::db()->exec_SELECTquery('title',$table,$clauseSQL);
+				if ($result) {
+					$row2 = tx_div::db()->sql_fetch_assoc($result);
+					// Update the title with the page's title
+					$row['title'] = $row2['title'];
+				}
+			}
+		}
+		return $row['title'];
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
