@@ -24,6 +24,8 @@
 /**
  * Plugin 'RSS services' for the 'ecorss' extension.
  *
+ * $Id$
+ *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
  * @subpackage ecorss
@@ -31,21 +33,29 @@
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
+ *   44: class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine
+ *   49:     function printSummary()
+ *   58:     function printUrl()
+ *
+ * TOTAL FUNCTIONS: 2
+ * (This index is automatically created/updated by the extension "extdeveval")
+ *
  */
-
 class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 
-	function printSummary(){
+	/**
+	 * Print the feed's summary.
+	 */
+	function printSummary() {
 		$content = str_replace('<','&lt;',$this->asRte('summary'));
 		$content = str_replace('>','&gt;',$content);
 		print str_replace('&nbsp;','',$content);
 	}
 
 	/**
-	 * print the current url of the page
-	 *
+	 * Print the current url of the page.
 	 */
-	function printUrl(){
+	function printUrl() {
 		print 'http://'.$this->asText('host');
 		print $this->asText('url');
 	}

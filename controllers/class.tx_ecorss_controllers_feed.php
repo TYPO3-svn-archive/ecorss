@@ -24,6 +24,8 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
+ * $Id$
+ *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
  * @subpackage ecorss
@@ -31,23 +33,38 @@
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
+ *   43: class tx_ecorss_controllers_feed extends tx_lib_controller
+ *   57:     function add($content, $configurations)
+ *   98:     function display($content, $configurations)
+ *  118:     function defaultAction()
+ *  152:     function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
+ *
+ * TOTAL FUNCTIONS: 4
+ * (This index is automatically created/updated by the extension "extdeveval")
+ *
  */
-
 class tx_ecorss_controllers_feed extends tx_lib_controller{
 
 	var $defaultAction = 'default';
-	
-	public function add($content,$configurations) {
+
+	/**
+	 * Add a feed to the HTML page header.
+	 *
+	 * @param	string	$content: Not used.
+	 * @param	array	$configurations: Plugin configuration
+	 * @access	public
+	 */
+	public function add($content, $configurations) {
 		$htmlHeader = '';
 		$errorMsg = '<div style="color:red"><b>plugin ecorss error</b> : ';
 		//loop around the feed
-		foreach($configurations as $config){
-			if(is_array($config)){
-				
-				if(isset($config['typeNum'])){
+		foreach ($configurations as $config) {
+			if (is_array($config)){
+
+				if (isset($config['typeNum'])) {
 					$title = isset($config['title']) ? $config['title'] : '';
 					$feed = isset($config['feed']) ? $config['feed'] : 'atom';
-					switch($feed){
+					switch($feed) {
 						case 'rss' :
 							$feed = 'application/rss+xml';
 							break;
@@ -55,15 +72,14 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 						default :
 							$feed = 'application/atom+xml';
 					}
-					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$config['url'].'" />'.chr(10); 
-				}
-				else{
+					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$config['url'].'" />'.chr(10);
+				} else {
 					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup : page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
 				}
 			}
 		}
 		$GLOBALS['TSFE']->additionalHeaderData[$this->getClassName()] = $htmlHeader;
-		
+
 		/*
 		 * feed example :
 		 * http://www.oreillynet.com/pub/feed/20 (atom)
@@ -72,23 +88,35 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		 */
 	}
 
-	public function display($content,$configurations) {
+	/**
+	 * Display a feed.
+	 * 
+	 * @param	string	$content: Not used
+	 * @param	array	$configurations: Plugin configuration
+	 * @access	public
+	 */
+	public function display($content, $configurations) {
 		$ClassName = tx_div::makeInstance('tx_ecorss_controllers_feed');
 		$feed = new $ClassName();
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'],$configurations);
 		return $feed->main(null,$TSconfig);
-		
-		// !!! TODO, will probably change in future lib/div 
+
+		// !!! TODO, will probably change in future lib/div
 		// evaluate this :
 		//$ClassName = tx_div::makeInstance('tx_ecorss_controllers_feed');
 		//$class = new $ClassName();
 		//$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['setup.'];
 		//return $class->main(null, array_merge($TSconfig['configurations.'],$configurations));
 	}
-	
+
+	/**
+	 * Default action of this class
+	 * 
+	 * @access	public
+	 */
 	public function defaultAction() {
-		// finding classnames
+		// Finding classnames
 		$model = $this->makeInstance('tx_ecorss_models_feed');
 		$model['title'] = $this->configurations['title'];
 		$model['subtitle'] = $this->configurations['subtitle'];
@@ -96,18 +124,17 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('HTTP_HOST');
 		$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
 		$model->load();
-		
-		//... and the view
+
+		// ... and the view
 		$view = $this->makeInstance('tx_ecorss_views_feed',$model);
 		$this->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed',TRUE,TRUE,$view);
-//		$view->castElements('tx_ecorss_views_entry');
-		
-		switch($this->configurations['feed']){
-			case 'rss';
+
+		switch ($this->configurations['feed']) {
+			case 'rss':
 				$template = 'rssTemplate';
 				break;
-			case 'atom';
-			default ;
+			case 'atom':
+			default:
 				$template = 'atomTemplate';
 		}
 
@@ -115,15 +142,21 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
 		return $output.$view->render($template);
 	}
-	
-	//Temporary function. This function has been removed from lib 0.0.24 from tx_lib_object. Waiting for a solution in a next "stable" alpha release.
-	function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE,&$object) {
-		if($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
-		if($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);
-		// First type the array or object to the new list object, so that we are sure to have an iterator object.
-		$list = new $listClassName($object->controller, $object->get($key)); 
-		for($list->rewind(); $list->valid(); $list->next()) 
-			$list->set($list->key(), new $listEntryClassName($object->controller, tx_div::toHashArray($list->current()))); 
+
+	/**
+	 * Temporary function. This function has been removed from lib 0.0.24 from tx_lib_object.
+	 * Waiting for a solution in a next "stable" alpha release.
+	 *
+	 * @access	private
+	 */
+	function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
+		if ($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
+		if ($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);
+		// First type the array or object to the new list object, so that we are sure to have an iterator object
+		$list = new $listClassName($object->controller, $object->get($key));
+		for ($list->rewind(); $list->valid(); $list->next()) {
+			$list->set($list->key(), new $listEntryClassName($object->controller, tx_div::toHashArray($list->current())));
+		}
 		$object->set($key, $list);
 	}
 

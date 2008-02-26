@@ -1,2 +1,8 @@
+20-02-08 Xavier Perseguers <xavier@perseguers.ch>
+	* added support for multilingual feeds
+
+18-02-08 Xavier Perseguers <xavier@perseguers.ch>
+	* fixed PHP warning bugs
+
 19-05-07 Fabien Udriot  <fabien.udriot@ecodev.ch>
-	* first day, kik off in Torgon ;)
+	* first day, kick off in Torgon ;)
