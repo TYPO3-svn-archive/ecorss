@@ -6,7 +6,7 @@
 	<updated><?php print date('c') ?></updated>
 
 	<generator uri="http://typo3.org" version="4.1">TYPO3 - Open Source Content Management</generator>
-	<link rel="self" type="application/atom+xml" href="" />
+	<link rel="self" type="application/atom+xml" href="<?php $this->printUrl() ?>" />
 	<?php foreach($this['entries'] as $entry): ?>
 	<entry>
 		<id><?php $entry->printAsRaw('link')?></id>
@@ -17,7 +17,8 @@
 		<published><?php print date('c',$entry->asText('published')) ?></published>
 		<updated><?php print date('c',$entry->asText('updated')) ?></updated>
 		<author>
-			<name></name>
+			<name><?php print $entry->asText('author') ?></name>
+			<email><?php  // print $entry->asText('author_email') ?></email>
 		</author>
 		<summary type="html"><?php $entry->printSummary()?></summary>
 	</entry>

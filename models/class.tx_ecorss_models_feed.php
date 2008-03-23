@@ -160,11 +160,16 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						$this->updateClosestTitle($row, $clauseSQL, $sysLanguageUid);
 					}
 
+					// Get author name and email
+					list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
+
 					$entries[$row['updated'].$uid] = array(
 						'title' => $defaultText.$row['title'],
 						'updated' => $row['updated'],
 						'published' => $row['published'],
 						'summary' => $row['summary'],
+						'author' => $author_name,
+						'author_email' => $author_email,
 						'link' => $url
 					);
 				}
@@ -176,12 +181,12 @@ class tx_ecorss_models_feed extends tx_lib_object {
 	}
 
 	/**
-	 * Return the list of page's pid being descendant of <code>$pid</code>.
+	 * Return the list of page's pid being descendant of <tt>$pid</tt>.
 	 *
 	 * @param	integer		$pid: mother page's pid
 	 * @param	array		$arrayOfPid: referenced array of children's pid
 	 * @access	private
-	 * @return	array		Array of all pid being children of <code>$pid</code>
+	 * @return	array		Array of all pid being children of <tt>$pid</tt>
 	 */
 	function getAllPages($pid, &$arrayOfPid = array()) {
 		$pages = tx_div::db()->exec_SELECTgetRows('uid','pages','deleted = 0 AND hidden = 0 AND pid='.$pid);
@@ -200,7 +205,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 	 *
 	 * @param	array		$row: SQL row whose title should be updated
 	 * @param	string		$clauseSQL: current SQL filtering clause
-	 * @param	integer		$sysLanguageUid: <code>sys_language_uid</code> when used in a multilingual context
+	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
 	 * @access	private
 	 * @return	string		Closest header for the given element
 	 */
@@ -230,6 +235,35 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			}
 		}
 		return $row['title'];
+	}
+
+	/**
+	 * Return the author name and email for a given content element.
+	 * This information is taken from the enclosing page itself.
+	 *
+	 * @param	array		$row: SQL row whose author should be returned
+	 * @param	integer		$sysLanguageUid: <tt>sys_language_uid</tt> when used in a multilingual context
+	 * @return	array		author name and email
+	 */
+	function getAuthor(&$row, $sysLanguageUid = null) {
+		$author = $author_email = '';
+
+		$clauseSQL = 'uid='.$row['pid'];
+		$table = 'pages';
+		if ($sysLanguageUid != null && $sysLanguageUid > 0) {
+			$table = 'pages_language_overlay';
+		}
+
+		$result = tx_div::db()->exec_SELECTquery('author, author_email',$table,$clauseSQL);
+		if ($result) {
+			$row2 = tx_div::db()->sql_fetch_assoc($result);
+			$author = $row2['author'];
+			$author_email = $row2['author_email'];
+		}
+
+		if (empty($author)) $author = 'anonymous';
+
+		return array($author, $author_email);
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
