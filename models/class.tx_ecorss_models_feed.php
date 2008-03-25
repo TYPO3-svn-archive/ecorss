@@ -53,6 +53,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		//init a few variables
 		$pidRootline = $this->controller->configurations['pidRootline'];
 		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : null;
+		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : null;
 		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : array(0);
 		$limitSQL = isset($this->controller->configurations['numberItems']) ? $this->controller->configurations['numberItems'] : '10';
 		$entries = array();
@@ -161,7 +162,12 @@ class tx_ecorss_models_feed extends tx_lib_object {
 					}
 
 					// Get author name and email
-					list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
+					if ($author != null) {
+						$author_name = $author['name'];
+						$author_email = $author['email'];
+					} else {
+						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
+					}
 
 					$entries[$row['updated'].$uid] = array(
 						'title' => $defaultText.$row['title'],
