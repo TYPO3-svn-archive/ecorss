@@ -36,7 +36,7 @@
  *
  *   45: class tx_ecorss_models_feed extends tx_lib_object
  *   52:     function load()
- *  181:     function getAllPages($pid, &$arrayOfPid = array())
+ *  213:     function getAllPages($pid, &$arrayOfPid = array())
  *
  * TOTAL FUNCTIONS: 2
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -51,6 +51,8 @@ class tx_ecorss_models_feed extends tx_lib_object {
 	 */
 	public function load() {
 		//init a few variables
+		global $TYPO3_CONF_VARS;
+
 		$pidRootline = $this->controller->configurations['pidRootline'];
 		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : null;
 		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : null;
@@ -169,7 +171,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
 					}
 
-					$entries[$row['updated'].$uid] = array(
+					$entry = array(
 						'title' => $defaultText.$row['title'],
 						'updated' => $row['updated'],
 						'published' => $row['published'],
@@ -178,6 +180,20 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						'author_email' => $author_email,
 						'link' => $url
 					);
+
+					if (is_array($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'])) {
+						$_params = array(
+							'config' => isset($this->controller->configurations['hook.']) ? $this->controller->configurations['hook.'] : null,
+							'row'    => $row,
+							'entry'  => &$entry
+						);
+
+						foreach ($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'] as $_funcRef) {
+							t3lib_div::callUserFunction($_funcRef, &$_params, $this);
+						}
+					}
+
+					$entries[$row['updated'].$uid] = $entry;
 				}
 			}
 			// Sort decreasingly in case it is an union of different arrays
