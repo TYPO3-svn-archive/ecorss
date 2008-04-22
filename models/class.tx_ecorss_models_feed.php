@@ -34,9 +34,11 @@
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
- *   45: class tx_ecorss_models_feed extends tx_lib_object
- *   52:     function load()
- *  213:     function getAllPages($pid, &$arrayOfPid = array())
+ *   47: class tx_ecorss_models_feed extends tx_lib_object
+ *   54:     function load()
+ *  232:     function getAllPages($pid, &$arrayOfPid = array())
+ *  253:     function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null)
+ *  289:     function getAuthor(&$row, $sysLanguageUid = null)
  *
  * TOTAL FUNCTIONS: 2
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -64,6 +66,17 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		$className = tx_div::makeInstance('tx_lib_link');
 		$link = new $className();
 		$link->noHash();
+
+		// Cache mechanism
+		$hash = md5(serialize($this->configurations));
+		$cacheId = 'ecorss Feed';
+
+		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash);
+		if ($cacheContent) {
+			// Retrieving content from cache
+			$this['entries'] = unserialize($cacheContent);
+			return;
+		}
 
 		foreach ($configurations as $config) {
 
@@ -199,7 +212,13 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			// Sort decreasingly in case it is an union of different arrays
 			krsort($entries,SORT_NUMERIC);
 		}
-		$this['entries'] = array_splice($entries,0,$limitSQL);
+
+		$entries = array_splice($entries, 0, $limitSQL);
+
+		// Cache the entries
+		$GLOBALS['TSFE']->sys_page->storeHash($hash, serialize($entries), 'ecorss Feed');
+
+		$this['entries'] = $entries;
 	}
 
 	/**
