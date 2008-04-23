@@ -1,6 +1,7 @@
 22-04-08 Xavier Perseguers <xavier@perseguers.ch>
 	* added caching mechanism
 	* removed protected pages from feeds
+	* fixed back URL for feed whose content does not come from table tt_content
 
 20-03-08 Xavier Perseguers <xavier@perseguers.ch>
 	* added retrieval and use of page author's name/email
