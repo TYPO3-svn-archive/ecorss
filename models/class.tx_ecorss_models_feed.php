@@ -149,7 +149,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			if ($result) {
 				while ($row = tx_div::db()->sql_fetch_assoc($result)) {
 					// Hide pages that are not visible to everybody
-					if (isPageProtected($row['pid'])) {
+					if ($this->isPageProtected($row['pid'])) {
 						continue;
 					}
 
@@ -175,8 +175,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						}
 
 						$link->parameters($parameters);
-						// TODO: handle https too!
-						$url = 'http://'.$this['host'].'/'.$link->makeUrl(false);
+						$url = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link->makeUrl(false);
 					}
 
 					// Handle the default text
@@ -339,7 +338,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		$result = tx_div::db()->exec_SELECTquery('perms_everybody',$table,$clauseSQL);
 		if ($result) {
 			$row = tx_div::db()->sql_fetch_assoc($result);
-			return ($row['perms_everybody'] == 0 || $row['perms_everybody'] & 1);
+			return !($row['perms_everybody'] == 0 || $row['perms_everybody'] & 1);
 		}
 		return false;
 	}

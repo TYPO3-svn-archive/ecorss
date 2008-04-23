@@ -37,7 +37,7 @@
  *   57:     function add($content, $configurations)
  *   98:     function display($content, $configurations)
  *  118:     function defaultAction()
- *  152:     function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
+ *  161:     function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
  *
  * TOTAL FUNCTIONS: 4
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -121,7 +121,16 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$model['title'] = $this->configurations['title'];
 		$model['subtitle'] = $this->configurations['subtitle'];
 		$model['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
-		$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('HTTP_HOST');
+		$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+
+		// Sanitize the host's value
+		if (strpos($model['host'], 'http://') !== 0) {
+			$model['host'] = 'http://'.$model['host'];
+		}
+		if (substr($model['host'], -1) == '/') {
+			$model['host'] = substr($model['host'], 0, strlen($model['host']) - 1);
+		}
+
 		$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
 		$model->load();
 

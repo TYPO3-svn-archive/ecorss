@@ -56,7 +56,7 @@ class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 	 * Print the current url of the page.
 	 */
 	function printUrl() {
-		print 'http://'.$this->asText('host');
+		print $this->asText('host');
 		print $this->asText('url');
 	}
 }

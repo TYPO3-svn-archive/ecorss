@@ -1,12 +1,12 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="<?php $this->printAsText('lang') ?>">
 	<title><?php $this->printAsText('title') ?></title>
 	<subtitle><?php $this->printAsText('subtitle') ?></subtitle>
-	<link rel="alternate" type="text/html" href="<?php $this->printUrl() ?>"/>
-	<id><?php print 'http://';$this->printAsText('host');$this->printAsText('url') ?></id>
+	<link rel="alternate" type="text/html" href="<?php $this->printAsText('url') ?>"/>
+	<id><?php print $this->printAsText('host');$this->printAsText('url') ?></id>
 	<updated><?php print date('c') ?></updated>
 
 	<generator uri="http://typo3.org" version="4.1">TYPO3 - Open Source Content Management</generator>
-	<link rel="self" type="application/atom+xml" href="<?php $this->printUrl() ?>" />
+	<link rel="self" type="application/atom+xml" href="<?php $this->printAsText('url') ?>" />
 	<?php foreach($this['entries'] as $entry): ?>
 	<entry>
 		<id><?php $entry->printAsRaw('link')?></id>
