@@ -37,7 +37,7 @@
  *   57:     function add($content, $configurations)
  *   98:     function display($content, $configurations)
  *  118:     function defaultAction()
- *  161:     function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
+ *  176:     function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object)
  *
  * TOTAL FUNCTIONS: 4
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -74,7 +74,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 					}
 					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$config['url'].'" />'.chr(10);
 				} else {
-					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup : page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
+					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
 				}
 			}
 		}
@@ -116,6 +116,16 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	 * @access	public
 	 */
 	public function defaultAction() {
+		// Cache mechanism
+		$hash = md5(serialize($this->configurations));
+		$cacheId = 'ecorss Feed';
+
+		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash);
+		if ($cacheContent) {
+			// Retrieving content from cache
+			return $cacheContent;
+		}
+
 		// Finding classnames
 		$model = $this->makeInstance('tx_ecorss_models_feed');
 		$model['title'] = $this->configurations['title'];
@@ -149,7 +159,12 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 
 		$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
 		$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
-		return $output.$view->render($template);
+		$output .= $view->render($template);
+
+		// Cache the feed
+		$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, 'ecorss Feed');
+
+		return $output;
 	}
 
 	/**
