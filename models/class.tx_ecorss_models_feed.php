@@ -158,10 +158,23 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 					$url = '';
 					if ($linkItem == 'true' || $linkItem == 1) {
-						$link->destination($row['pid']);
-						if (isset($this->controller->configurations['profileAjaxType'])) {
-							$link->parameters(array('type' => $this->controller->configurations['profileAjaxType']));
+						if ($table == 'tt_content') {	// standard content
+							$link->destination($row['pid']);
+							$parameters = array();
+						} else { // special content from user-configured table
+							$linkConfig = $config['single_page.'];
+							$link->destination($linkConfig['pid']);
+							$parameters = array($linkConfig['linkParamUid'] => $row['uid']);
 						}
+
+						if (isset($this->controller->configurations['profileAjaxType'])) {
+							$parameters = array_merge(
+								$parameters,
+								array('type' => $this->controller->configurations['profileAjaxType'])
+							);
+						}
+
+						$link->parameters($parameters);
 						// TODO: handle https too!
 						$url = 'http://'.$this['host'].'/'.$link->makeUrl(false);
 					}
