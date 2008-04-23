@@ -34,11 +34,12 @@
 /**
  * [CLASS/FUNCTION INDEX of SCRIPT]
  *
- *   47: class tx_ecorss_models_feed extends tx_lib_object
- *   54:     function load()
- *  232:     function getAllPages($pid, &$arrayOfPid = array())
- *  253:     function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null)
- *  289:     function getAuthor(&$row, $sysLanguageUid = null)
+ *   48: class tx_ecorss_models_feed extends tx_lib_object
+ *   55:     function load()
+ *  238:     function getAllPages($pid, &$arrayOfPid = array())
+ *  259:     function updateClosestTitle(&$row, $clauseSQL, $sysLanguageUid = null)
+ *  295:     function getAuthor(&$row, $sysLanguageUid = null)
+ *  322:     function isPageProtected($pid)
  *
  * TOTAL FUNCTIONS: 2
  * (This index is automatically created/updated by the extension "extdeveval")
@@ -100,6 +101,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			}
 
 			/* PROCESS THE OTHER FIELDS */
+			$table = $config['table'] != '' ? $config['table'] : 'tt_content';
 			$published = isset($config['published']) ? $config['published'] : 'tstamp';
 			$updated = isset($config['updated']) ? $config['updated'] : 'tstamp';
 			$uid = isset($config['uid']) ? $config['uid'] : 'uid';
@@ -136,7 +138,6 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			if ($sysLanguageUid != null) {
 				$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
 			}
-			$table = $config['table'] != '' ? $config['table'] : 'tt_content';
 
 			$debug = isset($config['debug']) ? $config['debug'] : 'false';
 			if ($debug == 'true' || $debug == 1) {
@@ -147,6 +148,10 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			/* PREPARE THE OUTPUT */
 			if ($result) {
 				while ($row = tx_div::db()->sql_fetch_assoc($result)) {
+					// Hide pages that are not visible to everybody
+					if (isPageProtected($row['pid'])) {
+						continue;
+					}
 
 					// Handle the link
 					$linkItem = isset($config['linkItem']) ? $config['linkItem'].' ' : 1;
@@ -157,6 +162,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						if (isset($this->controller->configurations['profileAjaxType'])) {
 							$link->parameters(array('type' => $this->controller->configurations['profileAjaxType']));
 						}
+						// TODO: handle https too!
 						$url = 'http://'.$this['host'].'/'.$link->makeUrl(false);
 					}
 
@@ -305,6 +311,24 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		if (empty($author)) $author = 'anonymous';
 
 		return array($author, $author_email);
+	}
+
+	/**
+	 * Check if a page is protected and should not be shown to 'everybody'.
+	 *
+	 * @param	integer		$pid: page id to be tested
+	 * @return	boolean		true if the page should not be disclosed to everybody
+	 */
+	function isPageProtected($pid) {
+		$clauseSQL = 'uid='.$pid;
+		$table = 'pages';
+
+		$result = tx_div::db()->exec_SELECTquery('perms_everybody',$table,$clauseSQL);
+		if ($result) {
+			$row = tx_div::db()->sql_fetch_assoc($result);
+			return ($row['perms_everybody'] == 0 || $row['perms_everybody'] & 1);
+		}
+		return false;
 	}
 }
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
