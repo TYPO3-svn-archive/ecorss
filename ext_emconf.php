@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext: "ecorss"
 #
-# Auto generated 03-03-2008 08:56
+# Auto generated 24-04-2008 19:23
 #
 # Manual updates:
 # Only the data in the array - anything else is removed by next write.
@@ -27,7 +27,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'modify_tables' => '',
 	'clearcacheonload' => 0,
 	'lockType' => '',
-	'author' => 'Fabien Udriot / Xavier Perseguers' ,
+	'author' => 'Fabien Udriot / Xavier Perseguers',
 	'author_email' => 'fabien.udriot@ecodev.ch',
 	'author_company' => 'Ecodev',
 	'CGLcompliance' => '',
@@ -44,7 +44,9 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:17:{s:9:"ChangeLog";s:4:"79e9";s:10:"README.txt";s:4:"e28f";s:12:"ext_icon.gif";s:4:"e0fc";s:12:"ext_icon.png";s:4:"4de9";s:17:"ext_localconf.php";s:4:"0b4a";s:14:"ext_tables.php";s:4:"505f";s:30:"icon_tx_ecobox_publication.png";s:4:"655f";s:13:"locallang.xml";s:4:"0073";s:16:"locallang_db.xml";s:4:"2e5c";s:38:"models/class.tx_ecorss_models_feed.php";s:4:"bf1b";s:14:"doc/manual.sxw";s:4:"2e6b";s:28:"configurations/constants.txt";s:4:"82c7";s:24:"configurations/setup.txt";s:4:"a26d";s:48:"controllers/class.tx_ecorss_controllers_feed.php";s:4:"8b8e";s:18:"templates/atom.php";s:4:"8a26";s:17:"templates/rss.php";s:4:"9741";s:36:"views/class.tx_ecorss_views_feed.php";s:4:"f1f7";}',
+	'_md5_values_when_last_written' => 'a:16:{s:13:"ChangeLog.txt";s:4:"e364";s:12:"ext_icon.gif";s:4:"e0fc";s:12:"ext_icon.png";s:4:"4de9";s:17:"ext_localconf.php";s:4:"806c";s:14:"ext_tables.php";s:4:"505f";s:30:"icon_tx_ecobox_publication.png";s:4:"655f";s:13:"locallang.xml";s:4:"0073";s:16:"locallang_db.xml";s:4:"2e5c";s:28:"configurations/constants.txt";s:4:"82c7";s:24:"configurations/setup.txt";s:4:"a26d";s:48:"controllers/class.tx_ecorss_controllers_feed.php";s:4:"2c92";s:14:"doc/manual.sxw";s:4:"1783";s:38:"models/class.tx_ecorss_models_feed.php";s:4:"cf22";s:18:"templates/atom.php";s:4:"315d";s:17:"templates/rss.php";s:4:"9741";s:36:"views/class.tx_ecorss_views_feed.php";s:4:"2da2";}',
+	'suggests' => array(
+	),
 );
 
 ?>
