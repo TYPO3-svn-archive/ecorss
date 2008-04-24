@@ -1,1 +1,0 @@
-This extension provides a way to display content in thematic boxes. See demo : http://essayeca.ch/fr/trampoline.html. This extension has been developed for specific needs but could be a good starting point

@@ -1,3 +1,7 @@
+24-04-08 Fabien Udriot  <fabien.udriot@ecodev.ch>
+	* document update
+	* cache configuration enhancement
+	
 22-04-08 Xavier Perseguers <xavier@perseguers.ch>
 	* added caching mechanism
 	* removed protected pages from feeds

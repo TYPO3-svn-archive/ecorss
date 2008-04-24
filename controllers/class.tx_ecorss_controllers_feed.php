@@ -48,7 +48,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	var $defaultAction = 'default';
 
 	/**
-	 * Add a feed to the HTML page header.
+	 * Add a feed to the HTML header. Typically it is a link like <link rel="alternate" type="application/atom+xml" title="..." href="..." />
 	 *
 	 * @param	string	$content: Not used.
 	 * @param	array	$configurations: Plugin configuration
@@ -89,7 +89,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	}
 
 	/**
-	 * Display a feed.
+	 * Display a XML feed. The main job of the extension.
 	 * 
 	 * @param	string	$content: Not used
 	 * @param	array	$configurations: Plugin configuration
@@ -99,6 +99,9 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		$ClassName = tx_div::makeInstance('tx_ecorss_controllers_feed');
 		$feed = new $ClassName();
 		$TSconfig = $GLOBALS['TSFE']->tmpl->setup['plugin.']['tx_ecorss.']['controller.']['feed.'];
+		if($TSconfig === null){
+			die('<h1>You died:</h1> You forgot to include static templates "ecorss" in your root template in onglet "Includes"');
+		}
 		$TSconfig['configurations.'] = array_merge($TSconfig['configurations.'],$configurations);
 		return $feed->main(null,$TSconfig);
 
@@ -118,52 +121,58 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	public function defaultAction() {
 		// Cache mechanism
 		$hash = md5(serialize($this->configurations));
-		$cacheId = 'ecorss Feed';
-
-		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash);
-		if ($cacheContent) {
-			// Retrieving content from cache
-			return $cacheContent;
+		$cacheId = 'ecorss feed';
+		if(!isset($this->configurations['cache_period'])){
+			$this->configurations['cache_period'] = 3600;	
 		}
+		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash, $this->configurations['cache_period']);
 
-		// Finding classnames
-		$model = $this->makeInstance('tx_ecorss_models_feed');
-		$model['title'] = $this->configurations['title'];
-		$model['subtitle'] = $this->configurations['subtitle'];
-		$model['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
-		$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('TYPO3_SITE_URL');
-
-		// Sanitize the host's value
-		if (strpos($model['host'], 'http://') !== 0) {
-			$model['host'] = 'http://'.$model['host'];
+		/* 
+		 * true, when the content is hold in the cache system
+		 * false, when the cache has expired or no cache is present
+		 */
+		if ($cacheContent !== null) {
+			$output = $cacheContent;
 		}
-		if (substr($model['host'], -1) == '/') {
-			$model['host'] = substr($model['host'], 0, strlen($model['host']) - 1);
+		else{
+			// Finding classnames
+			$model = $this->makeInstance('tx_ecorss_models_feed');
+			$model['title'] = $this->configurations['title'];
+			$model['subtitle'] = $this->configurations['subtitle'];
+			$model['lang'] = isset($this->configurations['lang']) ? $this->configurations['lang'] : 'en-GB';
+			$model['host'] = isset($this->configurations['host']) ? $this->configurations['host'] : t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+	
+			// Sanitize the host's value
+			if (strpos($model['host'], 'http://') !== 0) {
+				$model['host'] = 'http://'.$model['host'];
+			}
+			if (substr($model['host'], -1) == '/') {
+				$model['host'] = substr($model['host'], 0, strlen($model['host']) - 1);
+			}
+	
+			$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
+			$model->load();
+	
+			// ... and the view
+			$view = $this->makeInstance('tx_ecorss_views_feed',$model);
+			$this->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed',TRUE,TRUE,$view);
+	
+			switch ($this->configurations['feed']) {
+				case 'rss':
+					$template = 'rssTemplate';
+					break;
+				case 'atom':
+				default:
+					$template = 'atomTemplate';
+			}
+	
+			$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
+			$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
+			$output .= $view->render($template);
+	
+			// Cache the feed
+			$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, $cacheId);
 		}
-
-		$model['url'] = t3lib_div::getIndpEnv('REQUEST_URI');
-		$model->load();
-
-		// ... and the view
-		$view = $this->makeInstance('tx_ecorss_views_feed',$model);
-		$this->castList('entries','tx_ecorss_views_feed','tx_ecorss_views_feed',TRUE,TRUE,$view);
-
-		switch ($this->configurations['feed']) {
-			case 'rss':
-				$template = 'rssTemplate';
-				break;
-			case 'atom':
-			default:
-				$template = 'atomTemplate';
-		}
-
-		$encoding = isset($this->configurations['encoding']) ? $this->configurations['encoding'] : 'utf-8';
-		$output = '<?xml version="1.0" encoding="'.$encoding.'"?>'.chr(10);
-		$output .= $view->render($template);
-
-		// Cache the feed
-		$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, 'ecorss Feed');
-
 		return $output;
 	}
 
@@ -173,7 +182,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	 *
 	 * @access	private
 	 */
-	function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
+	private function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
 		if ($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
 		if ($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);
 		// First type the array or object to the new list object, so that we are sure to have an iterator object

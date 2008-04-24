@@ -200,7 +200,8 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						'author_email' => $author_email,
 						'link' => $url
 					);
-
+					
+					/* Hook that enable post processing the output) */
 					if (is_array($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'])) {
 						$_params = array(
 							'config' => isset($this->controller->configurations['hook.']) ? $this->controller->configurations['hook.'] : null,
@@ -209,7 +210,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						);
 
 						foreach ($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'] as $_funcRef) {
-							t3lib_div::callUserFunction($_funcRef, &$_params, $this);
+							t3lib_div::callUserFunction($_funcRef, $_params, $this);
 						}
 					}
 
