@@ -165,6 +165,14 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 						$link->parameters($parameters);
 						$url = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link->makeUrl(false);
+						
+						//handle the anchors
+						if (!isset($this->controller->configurations['no_anchor'])) {
+							$this->controller->configurations['no_anchor'] = 0;
+						}
+						if($this->controller->configurations['no_anchor'] != 1){
+							$url .= '#c'.$row['uid'];
+						}
 					}
 
 					// Handle the default text
