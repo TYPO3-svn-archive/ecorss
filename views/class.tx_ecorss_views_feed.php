@@ -47,9 +47,24 @@ class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 	 * Print the feed's summary.
 	 */
 	function printSummary() {
-		$content = str_replace('<','&lt;',$this->asRte('summary'));
-		$content = str_replace('>','&gt;',$content);
-		print str_replace('&nbsp;','',$content);
+		$regex = $result = array();
+		
+		// thanks to Marius Mühlberger <mm@co-operation.de> for the regular expressions
+		// Remove script-tags with content
+		$result[] = '';
+		$regex[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
+		
+		// Remove event handler
+		$result[] = '';
+		$regex[] = '/( *)(on[a-z]{4,10})( *)=( *)"([^"]*)"/isU';
+		
+		// Remove javascript in url, etc
+		$result[] = '""';
+		$regex[] = '/"( *)javascript( *):([^"]*)"/isU';
+		
+		$content = preg_replace($regex,$result, $this->asRte('summary'));
+		
+		print '<![CDATA['.$content.']]>';
 	}
 
 	/**
