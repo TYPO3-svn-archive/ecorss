@@ -5,7 +5,7 @@
 	<id><?php print $this->printAsText('host');$this->printAsText('url') ?></id>
 	<updated><?php print date('c') ?></updated>
 
-	<generator uri="http://typo3.org" version="4.1">TYPO3 - Open Source Content Management</generator>
+	<generator uri="http://typo3.org" version="<?php echo t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']); ?>">TYPO3 - Open Source Content Management</generator>
 	<link rel="self" type="application/atom+xml" href="<?php $this->printAsText('url') ?>" />
 	<?php foreach($this['entries'] as $entry): ?>
 	<entry>
