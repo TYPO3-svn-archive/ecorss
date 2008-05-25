@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS services' for the 'ecorss' extension.
  *
- * $Id$
+ * $Id: class.tx_ecorss_views_feed.php 9013 2008-04-25 21:16:52Z fudriot $
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
@@ -71,7 +71,7 @@ class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 	 * Print the current url of the page.
 	 */
 	function printUrl() {
-		print $this->asText('host');
+		print $this->printAsRaw('host');
 		print $this->asText('url');
 	}
 }
