@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id$
+ * $Id: class.tx_ecorss_controllers_feed.php 9002 2008-04-24 16:52:44Z fudriot $
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
@@ -180,9 +180,9 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 	 * Temporary function. This function has been removed from lib 0.0.24 from tx_lib_object.
 	 * Waiting for a solution in a next "stable" alpha release.
 	 *
-	 * @access	private
+	 * @access	public
 	 */
-	private function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
+	public function castList($key, $listClassName = 'tx_lib_object', $listEntryClassName = 'tx_lib_object', $callMakeInstanceClassNameForList = TRUE, $callMakeInstanceClasNameForListEntry = TRUE, &$object) {
 		if ($callMakeInstanceClasNameForList) $listClassName = tx_div::makeInstanceClassName($listClassName);
 		if ($callMakeInstanceClasNameForListEntry) $listEntryClassName = tx_div::makeInstanceClassName($listEntryClassName);
 		// First type the array or object to the new list object, so that we are sure to have an iterator object
