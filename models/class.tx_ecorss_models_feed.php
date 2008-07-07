@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id$
+ * $Id: class.tx_ecorss_models_feed.php 9012 2008-04-25 20:38:37Z fudriot $
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @author  Xavier Perseguers <xavier@perseguers.ch>
@@ -99,7 +99,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated';
 
 			/* PROCESS THE CLAUSE */
-			$clauseSQL = 'hidden=0 and deleted=0';
+			$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0';
 			//select some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
 				$values = explode(',',$config['filterInclude']);

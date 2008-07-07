@@ -125,8 +125,12 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		if(!isset($this->configurations['cache_period'])){
 			$this->configurations['cache_period'] = 3600;	
 		}
+		if(isset($this->parameters['clear_cache'])){
+			if($this->parameters['clear_cache'] == 1){
+				$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'ident = "ecorss feed"');
+			}
+		}
 		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash, $this->configurations['cache_period']);
-
 		/* 
 		 * true, when the content is hold in the cache system
 		 * false, when the cache has expired or no cache is present
