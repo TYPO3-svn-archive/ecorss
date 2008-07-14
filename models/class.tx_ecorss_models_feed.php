@@ -99,7 +99,14 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated';
 
 			/* PROCESS THE CLAUSE */
-			$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0';
+			if($table == 'tt_content'){
+				// Handle the case where page are protected
+				$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0 AND fe_group = "" AND pid IN (SELECT uid FROM pages WHERE fe_group ="")';
+			}
+			else{
+				$clauseSQL = 'hidden=0 AND deleted=0';	
+			}
+			
 			//select some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
 				$values = explode(',',$config['filterInclude']);

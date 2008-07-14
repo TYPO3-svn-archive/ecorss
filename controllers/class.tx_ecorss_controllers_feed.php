@@ -72,12 +72,20 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 						default :
 							$feed = 'application/atom+xml';
 					}
-					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$config['url'].'" />'.chr(10);
+					
+					# Define the URL of the feed
+					$conf['data'] = 'leveluid:0';
+					$rootPid = $this->cObj->stdWrap('',$conf);
+					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array("type" => $config['typeNum']));
+					
+					# Define the <link>
+					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$feedURL.'" />'.chr(10);
 				} else {
 					print $errorMsg.'parameter typeNum is missing in TypoScript. Try something like this in setup: page.headerData.xxx.myFeed.typeNum = yyy'.'</div>';
 				}
 			}
 		}
+		
 		$GLOBALS['TSFE']->additionalHeaderData[$this->getClassName()] = $htmlHeader;
 
 		/*

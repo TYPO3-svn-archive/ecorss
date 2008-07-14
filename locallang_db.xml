@@ -11,7 +11,7 @@
 		</languageKey>
 		<languageKey index="fr" type="array">
 			<label index="tt_content.list_type_pi1">ecorss</label>
-			<label index="excludeFromFeed">Exclue le contenu du flux RSS:</label>
+			<label index="excludeFromFeed">Exclure le contenu du flux RSS:</label>
 		</languageKey>
 	</data>
 </T3locallang>
