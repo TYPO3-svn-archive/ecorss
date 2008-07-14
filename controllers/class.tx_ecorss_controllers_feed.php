@@ -75,7 +75,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 					
 					# Define the URL of the feed
 					$conf['data'] = 'leveluid:0';
-					$rootPid = $this->cObj->stdWrap('',$conf);
+					$rootPid = $this->cObj->stdWrap('',$conf); //return the id of the root page
 					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array("type" => $config['typeNum']));
 					
 					# Define the <link>
