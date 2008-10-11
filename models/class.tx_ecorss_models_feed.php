@@ -139,7 +139,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			
 			// Adds custom conditions.
 			if (isset($config['where']) ) { 
-				$clauseSQL = ' ' . $config['where'];
+				$clauseSQL .= ' ' . $config['where'];
 			}
 			
 			if (isset($config['orderBy'])) {
