@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS Services' for the 'ecorss' extension.
  *
- * $Id: class.tx_ecorss_models_feed.php 9012 2008-04-25 20:38:37Z fudriot $
+ * $Id$
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @author  Xavier Perseguers <xavier@perseguers.ch>
@@ -99,7 +99,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated';
 
 			/* PROCESS THE CLAUSE */
-			if($table == 'tt_content'){
+			if ($table == 'tt_content') {
 				// Handle the case where page are protected
 				$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0 AND fe_group = "" AND pid IN (SELECT uid FROM pages WHERE fe_group ="")';
 			}
@@ -107,21 +107,22 @@ class tx_ecorss_models_feed extends tx_lib_object {
 				$clauseSQL = 'hidden=0 AND deleted=0';	
 			}
 			
-			//select some field according to the configuration
+			// Selects some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
 				$values = explode(',',$config['filterInclude']);
 				foreach ($values as $value) {
 					$clauseSQL .= ' AND '.$config['filterField'].'="'.trim($value).'"';
 				}
 			}
-			// Exclude some field according to the configuration
+			// Excludes some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterExclude'])) {
 				$values = explode(',',$config['filterExclude']);
 				foreach ($values as $value) {
 					$clauseSQL .= ' AND '.$config['filterField'].'!="'.trim($value).'"';
 				}
 			}
-			// Check if the page is in the root line
+			
+			// Checks if the page is in the root line
 			if ($pidRootline != null) {
 				$pages = $this->getAllPages($pidRootline);
 				$pageClauseSQL = 'pid='.$pidRootline;
@@ -130,16 +131,29 @@ class tx_ecorss_models_feed extends tx_lib_object {
 				}
 				$clauseSQL .= ' AND ('.$pageClauseSQL.')'; #merge of the two clauses
 			}
+			
 			// Only return selected language content
 			if ($sysLanguageUid != null) {
 				$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
 			}
+			
+			// Adds custom conditions.
+			if (isset($config['where']) ) { 
+				$clauseSQL = ' ' . $config['where'];
+			}
+			
+			if (isset($config['orderBy'])) {
+				$order = $config['orderBy'];
+			}
+			else {
+				$order = 'tstamp DESC';
+			}
 
 			$debug = isset($config['debug']) ? $config['debug'] : 'false';
 			if ($debug == 'true' || $debug == 1) {
-				print tx_div::db()->SELECTquery($fieldSQL,$table,$clauseSQL,'','tstamp DESC',$limitSQL);
+				print tx_div::db()->SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 			}
-			$result = tx_div::db()->exec_SELECTquery($fieldSQL,$table,$clauseSQL,'','tstamp DESC',$limitSQL);
+			$result = tx_div::db()->exec_SELECTquery($fieldSQL, $table, $clauseSQL, '', $order, $limitSQL);
 
 			/* PREPARE THE OUTPUT */
 			if ($result) {
@@ -177,7 +191,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						if (!isset($this->controller->configurations['no_anchor'])) {
 							$this->controller->configurations['no_anchor'] = 0;
 						}
-						if($this->controller->configurations['no_anchor'] != 1){
+						if ($this->controller->configurations['no_anchor'] != 1) {
 							$url .= '#c'.$row['uid'];
 						}
 					}
