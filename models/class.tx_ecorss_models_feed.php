@@ -243,7 +243,15 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						}
 					}
 
-					$entries[$row['updated'].$uid] = $entry;
+					// Number of digit. This number should be verified. Prevent an error with big database.
+					// The order of the entries may be wrong in certain case. PHP expects an integer (32 bits) as index in an array but in big dataset, this number may exceed the integer
+					$nbr_digit = 7;
+					if (strlen($uid) < $nbr_digit) {
+					    $uid = str_pad($uid, $nbr_digit, '0');
+					} else {
+					    $uid = substr($uid,0,$nbr_digit);
+					}
+					$entries[($row['updated'] / 100000).$uid] = $entry;
 				}
 			}
 			// Sort decreasingly in case it is an union of different arrays
