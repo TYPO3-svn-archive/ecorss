@@ -24,7 +24,7 @@
 /**
  * Plugin 'RSS services' for the 'ecorss' extension.
  *
- * $Id: class.tx_ecorss_views_feed.php 9013 2008-04-25 21:16:52Z fudriot $
+ * $Id$
  *
  * @author	Fabien Udriot <fabien.udriot@ecodev.ch>
  * @package TYPO3
@@ -47,23 +47,34 @@ class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 	 * Print the feed's summary.
 	 */
 	function printSummary() {
-		$regex = $result = array();
-		
 		// thanks to Marius Mühlberger <mm@co-operation.de> for the regular expressions
 		// Remove script-tags with content
-		$result[] = '';
-		$regex[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
-		
+		$pattern[] = '/<( *)script([^>]*)type( *)=( *)([^>]*)>(.*)<\/( *)script( *)>/isU';
+		$replace[] = '';
+
 		// Remove event handler
-		$result[] = '';
-		$regex[] = '/( *)(on[a-z]{4,10})( *)=( *)"([^"]*)"/isU';
-		
+		$pattern[] = '/( *)(on[a-z]{4,10})( *)=( *)"([^"]*)"/isU';
+		$replace[] = '';
+
 		// Remove javascript in url, etc
-		$result[] = '""';
-		$regex[] = '/"( *)javascript( *):([^"]*)"/isU';
-		
-		$content = preg_replace($regex,$result, $this->asRte('summary'));
-		
+		$pattern[] = '/"( *)javascript( *):([^"]*)"/isU';
+		$replace[] = '""';
+
+
+		// Replaces baseURL link
+		$baseURL = $GLOBALS['TSFE']->tmpl->setup['config.']['baseURL'];
+		if($baseURL) {
+			// Replace links
+			$pattern[] = "/<a([^>]*) href=\"([^http|ftp|https][^\"]*)\"/isU";
+			$replace[] = "<a\${1} href=\"" . $baseURL . "\${2}\"";
+
+			// Replace images
+			$pattern[] = "/<img([^>]*) src=\"([^http|ftp|https][^\"]*)\"/";
+			$replace[] = "<img\${1} src=\"" . $baseURL . "\${2}\" alt=\${2}";
+		}
+
+		$content = preg_replace($pattern,$replace, $this->asRte('summary'));
+
 		print '<![CDATA['.$content.']]>';
 	}
 
