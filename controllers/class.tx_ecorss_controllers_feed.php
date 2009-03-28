@@ -77,6 +77,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 					$conf['data'] = 'leveluid:0';
 					$rootPid = $this->cObj->stdWrap('',$conf); //return the id of the root page
 					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array("type" => $config['typeNum']));
+#					t3lib_div::debug($feedURL,'$feedURL');
 					//$feedURL = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, array("type" => $config['typeNum'])); 
 					
 					# Define the <link>
@@ -134,7 +135,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		if(!isset($this->configurations['cache_period'])){
 			$this->configurations['cache_period'] = 3600;	
 		}
-		if(isset($this->parameters['clear_cache'])){
+		if(isset($this->parameters['clear_cache']) || t3lib_div::_GP('clear_cache') == 1){
 			if($this->parameters['clear_cache'] == 1){
 				$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'ident = "' . $cacheId . '"');
 			}
