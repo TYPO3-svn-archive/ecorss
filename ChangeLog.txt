@@ -1,4 +1,11 @@
-24-04-08 Fabien Udriot  <fabien.udriot@ecodev.ch>
+01-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* fixed bug with big database
+	* Corrected absolute URL
+	* add clear_cache parameter
+	* added configuration truncate
+	* added configuraiton truncate
+
+24-04-08 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* document update
 	* cache configuration enhancement
 	
