@@ -5,6 +5,7 @@
 	* added configuration truncate (truncate=300 tells to shorten the summary up to 300 characters)
 	* added configuration where (where = AND myField = 'myValue')
 	* updated documentation
+	* improved Atom validation
 
 24-04-08 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* document update

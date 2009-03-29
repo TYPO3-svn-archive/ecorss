@@ -83,7 +83,12 @@ class tx_ecorss_views_feed extends tx_lib_phpTemplateEngine {
 	 */
 	function printUrl() {
 		print $this->printAsRaw('host');
-		print $this->asText('url');
+		$url = $this->asText('url');
+		$pattern[] = '/\?clear_cache=1/isU';
+		$replace[] = '';
+		$replace[] = '/\&clear_cache=1/isU';
+		$replace[] = '';
+		print preg_replace($pattern, $replace, $url);
 	}
 }
 

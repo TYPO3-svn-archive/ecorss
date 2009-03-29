@@ -2,11 +2,11 @@
 	<title><?php $this->printAsText('title') ?></title>
 	<subtitle><?php $this->printAsText('subtitle') ?></subtitle>
 	<link rel="alternate" type="text/html" href="<?php $this->printAsText('url') ?>"/>
-	<id><?php print $this->printAsText('host');$this->printAsText('url') ?></id>
+	<id><?php $this->printUrl() ?></id>
 	<updated><?php print date('c') ?></updated>
 
 	<generator uri="http://typo3.org" version="<?php echo t3lib_div::int_from_ver($GLOBALS['TYPO_VERSION']); ?>">TYPO3 - Open Source Content Management</generator>
-	<link rel="self" type="application/atom+xml" href="<?php $this->printAsText('url') ?>" />
+	<link rel="self" type="application/atom+xml" href="<?php $this->printUrl() ?>" />
 	<?php foreach($this['entries'] as $entry): ?>
 	<entry>
 		<id><?php $entry->printAsRaw('link')?></id>
