@@ -1,9 +1,10 @@
 01-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* fixed bug with big database
-	* Corrected absolute URL
-	* add clear_cache parameter
-	* added configuration truncate
-	* added configuraiton truncate
+	* Corrected absolute URL (displays now images)
+	* added clear_cache parameter (clear_cache=1)
+	* added configuration truncate (truncate=300 tells to shorten the summary up to 300 characters)
+	* added configuration where (where = AND myField = 'myValue')
+	* updated documentation
 
 24-04-08 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* document update
