@@ -49,7 +49,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 	/**
 	 * Initialize the modem, parse the TS configuration and prepare the list of updated pages for the feed.
-	 * 
+	 *
 	 * @access public
 	 */
 	public function load() {
@@ -94,9 +94,10 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$published = isset($config['published']) ? $config['published'] : 'tstamp';
 			$updated = isset($config['updated']) ? $config['updated'] : 'tstamp';
 			$uid = isset($config['uid']) ? $config['uid'] : 'uid';
+			$headerLayout = $config['table'] == 'tt_content' ? ', header_layout' : '';
 
 			$pid = isset($config['pid']) ? $config['pid'] : 'pid';
-			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated';
+			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout;
 
 			/* PROCESS THE CLAUSE */
 			if ($table == 'tt_content') {
@@ -104,9 +105,9 @@ class tx_ecorss_models_feed extends tx_lib_object {
 				$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0 AND fe_group = "" AND pid IN (SELECT uid FROM pages WHERE fe_group ="")';
 			}
 			else{
-				$clauseSQL = 'hidden=0 AND deleted=0';	
+				$clauseSQL = 'hidden=0 AND deleted=0';
 			}
-			
+
 			// Selects some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
 				$values = explode(',',$config['filterInclude']);
@@ -121,7 +122,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 					$clauseSQL .= ' AND '.$config['filterField'].'!="'.trim($value).'"';
 				}
 			}
-			
+
 			// Checks if the page is in the root line
 			if ($pidRootline != null) {
 				$pages = $this->getAllPages($pidRootline);
@@ -131,17 +132,17 @@ class tx_ecorss_models_feed extends tx_lib_object {
 				}
 				$clauseSQL .= ' AND ('.$pageClauseSQL.')'; #merge of the two clauses
 			}
-			
+
 			// Only return selected language content
 			if ($sysLanguageUid != null) {
 				$clauseSQL .= ' AND sys_language_uid='.$sysLanguageUid;
 			}
-			
+
 			// Adds custom conditions.
-			if (isset($config['where']) ) { 
+			if (isset($config['where']) ) {
 				$clauseSQL .= ' ' . $config['where'];
 			}
-			
+
 			if (isset($config['orderBy'])) {
 				$order = $config['orderBy'];
 			}
@@ -186,7 +187,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 						$link->parameters($parameters);
 						$url = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link->makeUrl(false);
-						
+
 						//handle the anchors
 						if (!isset($this->controller->configurations['no_anchor'])) {
 							$this->controller->configurations['no_anchor'] = 0;
@@ -207,8 +208,9 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						$uid = substr($uid,0,5);
 					}
 
-					// Handle empty title
-					if (!$row['title'] && $table == 'tt_content') {
+					// Handle empty title or hidden header for table tt_content
+					if ((!$row['title'] && $table == 'tt_content') ||
+						(isset($row['header_layout']) && $row['header_layout'] == '100')) {
 						$this->updateClosestTitle($row, $clauseSQL, $sysLanguageUid);
 					}
 
@@ -220,6 +222,11 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
 					}
 
+					// Truncates the summary.
+					if(isset($config['truncate']) and $config['truncate'] > 0){
+						$row['summary'] = $this->truncate($row['summary'], $config['truncate'], ' ...');
+					}
+
 					$entry = array(
 						'title' => $defaultText.$row['title'],
 						'updated' => $row['updated'],
@@ -229,7 +236,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						'author_email' => $author_email,
 						'link' => $url
 					);
-					
+
 					/* Hook that enable post processing the output) */
 					if (is_array($TYPO3_CONF_VARS['EXTCONF']['ecorss']['PostProcessingProc'])) {
 						$_params = array(
@@ -247,9 +254,9 @@ class tx_ecorss_models_feed extends tx_lib_object {
 					// The order of the entries may be wrong in certain case. PHP expects an integer (32 bits) as index in an array but in big dataset, this number may exceed the integer
 					$nbr_digit = 7;
 					if (strlen($uid) < $nbr_digit) {
-					    $uid = str_pad($uid, $nbr_digit, '0');
+						$uid = str_pad($uid, $nbr_digit, '0');
 					} else {
-					    $uid = substr($uid,0,$nbr_digit);
+						$uid = substr($uid,0,$nbr_digit);
 					}
 					$entries[($row['updated'] / 100000).$uid] = $entry;
 				}
@@ -261,6 +268,29 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		$this['entries'] = array_splice($entries, 0, $limitSQL);
 	}
 
+	/**
+	 * Truncates the text according to the length. Cut up the content between to words (at the next space).
+	 *
+	 * @param	string	$content: input text
+	 * @param	int		$int_length
+	 * @param	int		$int_length
+	 */
+	private function truncate($content, $length, $str_suffixe=""){
+		$content = strip_tags($content);
+
+		//TRUE means the text needs to be cut up
+		if (strlen($content) > $length) {
+    		$content = substr($content, 0, $length);
+
+			// Looking for the next space
+    		$last_space = strrpos($content, " ");
+
+			// Adds the terminaison
+    		$content = substr($content, 0, $last_space).$str_suffixe;
+		}
+		return $content;
+	}
+	
 	/**
 	 * Return the list of page's pid being descendant of <tt>$pid</tt>.
 	 *
