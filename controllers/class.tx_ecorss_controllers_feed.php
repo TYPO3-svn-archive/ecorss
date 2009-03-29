@@ -135,11 +135,11 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 		if(!isset($this->configurations['cache_period'])){
 			$this->configurations['cache_period'] = 3600;	
 		}
+		// Clear the cach whenever special paramerter are given
 		if(isset($this->parameters['clear_cache']) || t3lib_div::_GP('clear_cache') == 1){
-			if($this->parameters['clear_cache'] == 1){
-				$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'ident = "' . $cacheId . '"');
-			}
+			$GLOBALS['TYPO3_DB']->exec_DELETEquery('cache_hash', 'ident = "' . $cacheId . '"');
 		}
+
 		$cacheContent = $GLOBALS['TSFE']->sys_page->getHash($hash, $this->configurations['cache_period']);
 		/* 
 		 * true, when the content is hold in the cache system
