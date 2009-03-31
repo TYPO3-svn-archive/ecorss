@@ -186,7 +186,12 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						}
 
 						$link->parameters($parameters);
-						$url = t3lib_div::getIndpEnv('TYPO3_SITE_URL').$link->makeUrl(false);
+
+						// domain may be something else. Look for it
+						$domain = $this->getDomain($link->destination);
+
+						// Gets the URL
+						$url = $domain . $link->makeUrl(false);
 
 						//handle the anchors
 						if (!isset($this->controller->configurations['no_anchor'])) {
@@ -280,17 +285,52 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 		//TRUE means the text needs to be cut up
 		if (strlen($content) > $length) {
-    		$content = substr($content, 0, $length);
+			$content = substr($content, 0, $length);
 
 			// Looking for the next space
-    		$last_space = strrpos($content, " ");
+			$last_space = strrpos($content, " ");
 
 			// Adds the terminaison
-    		$content = substr($content, 0, $last_space).$str_suffixe;
+			$content = substr($content, 0, $last_space).$str_suffixe;
 		}
 		return $content;
 	}
-	
+
+	/**
+	 * Look for the real domain name. Useful in multidomain configuration
+	 *
+	 * @param	int		$pid: the pid of the current page
+	 * @return	string	$domain: the target domain name
+	 *
+	 */
+	private function getDomain($pid) {
+		// check wheter we are in a multidomain environment
+		global $TYPO3_DB;
+
+		//default value
+		$domain = t3lib_div::getIndpEnv('TYPO3_SITE_URL');
+
+		// Looks for existing domain
+		$records = $TYPO3_DB->exec_SELECTgetRows('*','sys_domain', '', '', 'sorting DESC');
+
+		// Looks for the right domain
+		if (!empty($records)) {
+			foreach($records as $record) {
+				$domains[$record['pid']] = $record['domainName'];
+			}
+			
+			$pids = $GLOBALS['TSFE']->sys_page->getRootLine($pid);
+			foreach ($pids as $pid) {
+				$uid = $pid['uid'];
+				if (isset($domains[$uid])) {
+					$domain = 'http://' . $domains[$uid] . '/';
+					break;
+				}
+			}
+		}
+		return $domain;
+	}
+
 	/**
 	 * Return the list of page's pid being descendant of <tt>$pid</tt>.
 	 *
