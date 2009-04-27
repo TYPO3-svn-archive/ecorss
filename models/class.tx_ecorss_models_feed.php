@@ -57,8 +57,8 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		global $TYPO3_CONF_VARS;
 
 		$pidRootline = $this->controller->configurations['pidRootline'];
-		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : null;
-		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : null;
+		$sysLanguageUid = isset($this->controller->configurations['sysLanguageUid']) ? $this->controller->configurations['sysLanguageUid'] : '';
+		$author = isset($this->controller->configurations['author.']) ? $this->controller->configurations['author.'] : '';
 		$configurations = is_array($this->controller->configurations['select.']) ? $this->controller->configurations['select.'] : array(0);
 		$limitSQL = isset($this->controller->configurations['numberItems']) ? $this->controller->configurations['numberItems'] : '10';
 		$entries = array();
@@ -97,7 +97,10 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$headerLayout = $config['table'] == 'tt_content' ? ', header_layout' : '';
 
 			$pid = isset($config['pid']) ? $config['pid'] : 'pid';
-			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout;
+
+			// Added possible author field thanks to Alexandre Morel
+			$authorSQL = isset($config['author']) ? ", " . $config['author'] . " as author" : '';
+			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout . $authorSQL;
 
 			/* PROCESS THE CLAUSE */
 			if ($table == 'tt_content') {
@@ -219,11 +222,17 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						$this->updateClosestTitle($row, $clauseSQL, $sysLanguageUid);
 					}
 
-					// Get author name and email
-					if ($author != null) {
+					// Get author name and email: configuration
+					if ($author != NULL) {
 						$author_name = $author['name'];
 						$author_email = $author['email'];
-					} else {
+					}
+					elseif($authorSQL != NULL) {
+						//print "alexandre";
+						$author_name = $row['author'];
+						$author_email = '';
+					}
+					else {
 						list($author_name, $author_email) = $this->getAuthor($row, $sysLanguageUid);
 					}
 
@@ -257,13 +266,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 					// Number of digit. This number should be verified. Prevent an error with big database.
 					// The order of the entries may be wrong in certain case. PHP expects an integer (32 bits) as index in an array but in big dataset, this number may exceed the integer
-					$nbr_digit = 7;
-					if (strlen($uid) < $nbr_digit) {
-						$uid = str_pad($uid, $nbr_digit, '0');
-					} else {
-						$uid = substr($uid,0,$nbr_digit);
-					}
-					$entries[($row['updated'] / 100000).$uid] = $entry;
+					$entries[(int)($row['updated'] / 100000) . $uid] = $entry;
 				}
 			}
 			// Sort decreasingly in case it is an union of different arrays
@@ -318,7 +321,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			foreach($records as $record) {
 				$domains[$record['pid']] = $record['domainName'];
 			}
-			
+
 			$pids = $GLOBALS['TSFE']->sys_page->getRootLine($pid);
 			foreach ($pids as $pid) {
 				$uid = $pid['uid'];

@@ -1,11 +1,12 @@
 27-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* added tidy option for clearing the feed and make it XML compliant.
+	* added author field thanks to Alexandre Morel <alexandre.morel@arcantel.ch>
 
 01-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
-	* fixed bug with big database
+	* fixed bug with big database thanks to Alexandre Morel <alexandre.morel@arcantel.ch>
 	* Corrected absolute URL (displays now images)
 	* added clear_cache parameter (clear_cache=1)
-	* added configuration truncate (truncate=300 tells to shorten the summary up to 300 characters)
+	* added configuration truncate (truncate=300 tells to shorten the summary up to 300 characters, thanks to Alexandre Morel <alexandre.morel@arcantel.ch>)
 	* added configuration where (where = AND myField = 'myValue')
 	* updated documentation
 	* improved Atom validation
