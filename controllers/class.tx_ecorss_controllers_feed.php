@@ -187,6 +187,28 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 			// Cache the feed
 			$GLOBALS['TSFE']->sys_page->storeHash($hash, $output, $cacheId);
 		}
+		
+		if ($this->configurations['tidy']) {
+			try {
+				// Initializes variables + commmand
+				$dirtyName = t3lib_div::tempnam('ecorss_dirty_');
+				if (!isset($this->configurations['tidy_path'])) {
+					$this->configurations['tidy_path'] = 'tidy -i -utf8  -xml';
+				}
+				$command = $this->configurations['tidy_path'] . ' ' . $dirtyName;
+				
+				// tidy feed
+				file_put_contents($dirtyName, $output);
+				exec($command, $output);
+				$output = implode(chr(10), $output);
+
+				//Clean up unecessary files
+				unlink($dirtyName);
+			}
+			catch(Exception $e) {
+				new Exception('Unable to write');	
+			}
+		}
 		return $output;
 	}
 

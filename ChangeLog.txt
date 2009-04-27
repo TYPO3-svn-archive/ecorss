@@ -1,3 +1,6 @@
+27-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* added tidy option for clearing the feed and make it XML compliant.
+
 01-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* fixed bug with big database
 	* Corrected absolute URL (displays now images)
