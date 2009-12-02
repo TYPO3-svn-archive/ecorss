@@ -100,7 +100,11 @@ class tx_ecorss_models_feed extends tx_lib_object {
 
 			// Added possible author field thanks to Alexandre Morel
 			$authorSQL = isset($config['author']) ? ", " . $config['author'] . " as author" : '';
-			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout . $authorSQL;
+
+			// Added possible extra fields thanks to Pierre Rossel
+			$extraFieldsSQL = isset($config['extraFields']) ? ", " . $config['extraFields'] : '';
+			
+			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
 
 			/* PROCESS THE CLAUSE */
 			if ($table == 'tt_content') {
@@ -175,7 +179,12 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						if ($table == 'tt_content') {	// standard content
 							$link->destination($row['pid']);
 							$parameters = array();
-						} else { // special content from user-configured table
+						}
+						elseif ($table == 'pages'){ // special content from user-configured table
+                            $link->destination($row['uid']);
+                            $parameters = array();
+						}
+						else { // special content from user-configured table
 							$linkConfig = $config['single_page.'];
 							$link->destination($linkConfig['pid']);
 							$parameters = array($linkConfig['linkParamUid'] => $row['uid']);
@@ -326,7 +335,11 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			foreach ($pids as $pid) {
 				$uid = $pid['uid'];
 				if (isset($domains[$uid])) {
-					$domain = 'http://' . $domains[$uid] . '/';
+					$protocole = 'http';
+					if (preg_match('/https/is', $GLOBALS['_SERVER']['SERVER_PROTOCOL'])) {
+						$protocole = 'https';
+					}
+					$domain = $protocole . '://' . $domains[$uid] . '/';
 					break;
 				}
 			}
@@ -438,6 +451,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 		return false;
 	}
 }
+
 if (defined('TYPO3_MODE') && $TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']) {
 	include_once($TYPO3_CONF_VARS[TYPO3_MODE]['XCLASS']['ext/ecorss/models/class.tx_ecorss_models_feed.php']);
 }
