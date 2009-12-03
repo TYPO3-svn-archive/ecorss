@@ -1,13 +1,13 @@
 <?php
 
 ########################################################################
-# Extension Manager/Repository config file for ext: "ecorss"
+# Extension Manager/Repository config file for ext "ecorss".
 #
-# Auto generated 28-04-2009 09:20
+# Auto generated 03-12-2009 18:35
 #
 # Manual updates:
-# Only the data in the array - anything else is removed by next write.
-# "version" and "dependencies" must not be touched!
+# Only the data in the array - everything else is removed by next
+# writing. "version" and "dependencies" must not be touched!
 ########################################################################
 
 $EM_CONF[$_EXTKEY] = array(
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Generate *quickly* and *easily* RSS / ATOM feeds based on the latest content of a SQL table. Can deal with flexform content and multilingual websites.',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '0.7.0',
+	'version' => '0.7.1',
 	'dependencies' => 'cms,div,lib',
 	'conflicts' => '',
 	'priority' => '',
@@ -44,7 +44,7 @@ $EM_CONF[$_EXTKEY] = array(
 		'suggests' => array(
 		),
 	),
-	'_md5_values_when_last_written' => 'a:19:{s:13:"ChangeLog.txt";s:4:"bae2";s:12:"ext_icon.gif";s:4:"e0fc";s:12:"ext_icon.png";s:4:"4de9";s:17:"ext_localconf.php";s:4:"806c";s:14:"ext_tables.php";s:4:"eb65";s:14:"ext_tables.sql";s:4:"b53c";s:24:"ext_typoscript_setup.txt";s:4:"68b7";s:30:"icon_tx_ecobox_publication.png";s:4:"655f";s:13:"locallang.xml";s:4:"0073";s:16:"locallang_db.xml";s:4:"8c4a";s:28:"configurations/constants.txt";s:4:"82c7";s:24:"configurations/setup.txt";s:4:"a26d";s:48:"controllers/class.tx_ecorss_controllers_feed.php";s:4:"4adc";s:14:"doc/manual.pdf";s:4:"ca0d";s:14:"doc/manual.sxw";s:4:"74c9";s:38:"models/class.tx_ecorss_models_feed.php";s:4:"de19";s:18:"templates/atom.php";s:4:"5e91";s:17:"templates/rss.php";s:4:"9741";s:36:"views/class.tx_ecorss_views_feed.php";s:4:"5638";}',
+	'_md5_values_when_last_written' => 'a:18:{s:13:"ChangeLog.txt";s:4:"ea74";s:12:"ext_icon.gif";s:4:"e0fc";s:12:"ext_icon.png";s:4:"4de9";s:17:"ext_localconf.php";s:4:"806c";s:14:"ext_tables.php";s:4:"eb65";s:14:"ext_tables.sql";s:4:"b53c";s:30:"icon_tx_ecobox_publication.png";s:4:"655f";s:13:"locallang.xml";s:4:"0073";s:16:"locallang_db.xml";s:4:"8c4a";s:28:"configurations/constants.txt";s:4:"82c7";s:24:"configurations/setup.txt";s:4:"e94b";s:48:"controllers/class.tx_ecorss_controllers_feed.php";s:4:"4adc";s:14:"doc/manual.pdf";s:4:"07c9";s:14:"doc/manual.sxw";s:4:"a0db";s:38:"models/class.tx_ecorss_models_feed.php";s:4:"11c1";s:18:"templates/atom.php";s:4:"98df";s:17:"templates/rss.php";s:4:"9947";s:36:"views/class.tx_ecorss_views_feed.php";s:4:"5638";}',
 	'suggests' => array(
 	),
 );
