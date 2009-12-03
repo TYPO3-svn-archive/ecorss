@@ -22,6 +22,7 @@ tt_content.list.20.tx_ecorss_controllers_feed =< plugin.tx_ecorss.controller.fee
 
 ######### FORM AJAX CONFIGURATION #########
 includeLibs.tx_ecorss_controllers_feed = EXT:ecorss/controllers/class.tx_ecorss_controllers_feed.php  
+/*
 ecorssFeed = PAGE
 ecorssFeed.typeNum = {$plugin.tx_ecorss.feedType}
 ecorssFeed.config.admPanel = 0
@@ -29,4 +30,4 @@ ecorssFeed.config.disableAllHeaderCode = true
 ecorssFeed.50 = USER_INT
 ecorssFeed.50.userFunc = tx_ecorss_controllers_feed->main
 ecorssFeed.50.configurations < temp.tx_ecorss
-
+*/
