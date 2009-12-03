@@ -1,3 +1,9 @@
+27-12-03 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* Fixed problem for user-configured table
+	* Added extraFields configuration
+	* Added htmlspecialchars on URL
+	* Documentation updated
+
 27-04-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* added tidy option for clearing the feed and make it XML compliant.
 	* added author field thanks to Alexandre Morel <alexandre.morel@arcantel.ch>
