@@ -107,13 +107,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			$fieldSQL = $pid.' as pid, '.$uid.' as uid, '.$title.' as title, '.$summary.' as summary, '.$published.' as published, '.$updated.' as updated' . $headerLayout . $authorSQL . $extraFieldsSQL;
 
 			/* PROCESS THE CLAUSE */
-			if ($table == 'tt_content') {
-				// Handle the case where page are protected
-				$clauseSQL = 'hidden=0 AND deleted=0 AND tx_ecorss_excludeFromFeed = 0 AND fe_group = "" AND pid IN (SELECT uid FROM pages WHERE fe_group ="")';
-			}
-			else{
-				$clauseSQL = 'hidden=0 AND deleted=0';
-			}
+			$clauseSQL = '1=1 ' . tslib_cObj::enableFields($table);
 
 			// Selects some field according to the configuration
 			if (isset($config['filterField']) && isset($config['filterInclude'])) {
@@ -133,11 +127,24 @@ class tx_ecorss_models_feed extends tx_lib_object {
 			// Checks if the page is in the root line
 			if ($pidRootline != null) {
 				$pages = $this->getAllPages($pidRootline);
-				$pageClauseSQL = 'pid='.$pidRootline;
+				$pageClauseSQL = 'pid=' . $pidRootline;
 				foreach ($pages as $page) {
-					$pageClauseSQL .= ' OR pid='.$page['uid'];
+					$pageClauseSQL .= ' OR pid=' . $page['uid'];
 				}
+					
+				// Adds additional pid's
+				if (isset($config['additionalPids']) && $config['additionalPids'] != '') {
+					foreach (explode(',', $config['additionalPids']) as $pid) {
+						$pageClauseSQL .= ' OR pid=' . $pid;
+					}
+				}
+				
 				$clauseSQL .= ' AND ('.$pageClauseSQL.')'; #merge of the two clauses
+			}
+
+			// Adds additional SQL
+			if (isset($config['additionalSQL']) && $config['additionalSQL'] != '') {
+				$clauseSQL .= ' ' . $config['additionalSQL'] . ' ';
 			}
 
 			// Only return selected language content
@@ -187,7 +194,7 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						else { // special content from user-configured table
 							$linkConfig = $config['single_page.'];
 							$link->destination($linkConfig['pid']);
-							$parameters = array($linkConfig['linkParamUid'] => $row['uid']);
+							$parameters = array($linkConfig['linkParamUid'] => $row['uid'], 'no_cache' => '1');
 						}
 
 						if (isset($this->controller->configurations['profileAjaxType'])) {

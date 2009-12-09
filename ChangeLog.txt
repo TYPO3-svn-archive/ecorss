@@ -1,4 +1,8 @@
-27-12-03 Fabien Udriot <fabien.udriot@ecodev.ch>
+09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
+	* Added 2 configuration key: "additionalPids" and "additionalSQL". Useful in the tt_news context.
+	* Updated documentation
+	
+01-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* Fixed problem for user-configured table
 	* Added extraFields configuration
 	* Added htmlspecialchars on URL

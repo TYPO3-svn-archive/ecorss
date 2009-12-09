@@ -79,7 +79,7 @@ class tx_ecorss_controllers_feed extends tx_lib_controller{
 					$feedURL = $this->cObj->getTypoLink_URL($rootPid, array("type" => $config['typeNum']));
 #					t3lib_div::debug($feedURL,'$feedURL');
 					//$feedURL = $this->cObj->getTypoLink_URL($GLOBALS['TSFE']->id, array("type" => $config['typeNum'])); 
-					
+					$feedURL = 'atom.xml';
 					# Define the <link>
 					$htmlHeader .= '<link rel="alternate" type="'.$feed.'" title="'.$title.'" href="'.$feedURL.'" />'.chr(10);
 				} else {
