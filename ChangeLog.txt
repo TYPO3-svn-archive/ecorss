@@ -1,5 +1,7 @@
 09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
-	* Added 2 configuration key: "additionalPids" and "additionalSQL". Useful in the tt_news context.
+	* Added 2 configuration keys: "additionalPids" and "additionalSQL". Useful in tt_news context.
+	* Added tt_news example
+	* Fixed small bugs
 	* Updated documentation
 	
 01-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
