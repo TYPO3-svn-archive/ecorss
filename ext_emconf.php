@@ -12,10 +12,10 @@
 
 $EM_CONF[$_EXTKEY] = array(
 	'title' => 'Ecodev : feeds services (RSS / ATOM)',
-	'description' => 'Generate *quickly* and *easily* RSS / ATOM feeds based on the latest content of a SQL table. Can deal with flexform content and multilingual websites.',
+	'description' => 'Generate easily RSS / ATOM feeds based on the latest content of any tables in the database. Can deal with flexform content and multilingual / multidomain websites.',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '0.7.1',
+	'version' => '0.8.0',
 	'dependencies' => 'cms,div,lib',
 	'conflicts' => '',
 	'priority' => '',
