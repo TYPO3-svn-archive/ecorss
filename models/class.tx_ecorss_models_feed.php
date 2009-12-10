@@ -207,7 +207,12 @@ class tx_ecorss_models_feed extends tx_lib_object {
 						$link->parameters($parameters);
 
 						// domain may be something else. Look for it
-						$domain = $this->getDomain($link->destination);
+						if (isset($config['baseUrl']) && $config['baseUrl'] != '') {
+							$domain = $config['baseUrl'];
+						}
+						else {
+							$domain = $this->getDomain($link->destination);
+						}
 
 						// Gets the URL
 						$url = $domain . $link->makeUrl(false);
