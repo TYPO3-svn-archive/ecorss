@@ -1,5 +1,5 @@
 09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
-	* Added configuration key: "domainName"
+	* Added configuration key: "baseUrl"
 	
 09-12-09 Fabien Udriot <fabien.udriot@ecodev.ch>
 	* Added 2 configuration keys: "additionalPids" and "additionalSQL". Useful in tt_news context.
