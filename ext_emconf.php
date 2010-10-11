@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "ecorss".
 #
-# Auto generated 01-02-2010 13:42
+# Auto generated 11-10-2010 16:28
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,13 +15,13 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Generate easily RSS / ATOM feeds based on the latest content of any tables in the database. Can deal with flexform content and multilingual / multidomain websites.',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '0.9.1',
+	'version' => '0.9.2',
 	'dependencies' => 'cms,div,lib',
 	'conflicts' => '',
 	'priority' => '',
 	'loadOrder' => '',
 	'module' => '',
-	'state' => 'beta',
+	'state' => 'obsolete',
 	'uploadfolder' => 0,
 	'createDirs' => '',
 	'modify_tables' => '',
