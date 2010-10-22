@@ -9,7 +9,7 @@ $tempColumns = Array (
 		'label' => 'LLL:EXT:ecorss/locallang_db.xml:excludeFromFeed',
 		'config' => Array (
 			'type' => 'check',
-			"default" => "0",
+			"default" => "1",
 		)
 	),
 );
