@@ -18,7 +18,6 @@
 		<updated><?php print date('c',$entry->asText('updated')) ?></updated>
 		<author>
 			<name><?php print $entry->asText('author') ?></name>
-			<email><?php  // print $entry->asText('author_email') ?></email>
 		</author>
 		<summary type="html"><?php $entry->printSummary()?></summary>
 	</entry>
